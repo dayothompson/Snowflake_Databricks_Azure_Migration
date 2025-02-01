@@ -176,8 +176,8 @@ This project describes the step-by-step guide to migrates data from Snowflake to
 
 ### 7. Data Migration from Snowflake to Azure Data Lake Storage (ADLS) using Databricks
 1. By now, all the necessary permissions have been provisioned and you have access to the Snowflake tables and ADLS account.
-2. Use the [Snowflake-to-ADLS_Migration.ipynb] file to complete the steps below.
-3. **Read Data from Snowflake:** The [Snowflake-to-ADLS_Migration.ipynb] script queries the Snowflake tables and loads the data into a Spark DataFrame.
+2. Use the [Snowflake-to-ADLS_Migration.ipynb](./Databricks/Snowflake-to-ADLS_Migration.ipynb) file to complete the steps below.
+3. **Read Data from Snowflake:** The [Snowflake-to-ADLS_Migration.ipynb](./Databricks/Snowflake-to-ADLS_Migration.ipynb) script queries the Snowflake tables and loads the data into a Spark DataFrame.
 4. **Data Transformation:** It casts various columns into specific data types (e.g., integers and strings) and adds new columns.
 5. **Copy data:** Finally, the transformed data is written to ADLS.
 
