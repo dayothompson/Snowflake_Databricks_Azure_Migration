@@ -174,6 +174,7 @@ This project describes the step-by-step guide to migrates data from Snowflake to
 4. You should be able to see the tables in the Snowflake database from Databricks.
 
 
+
 ### 7. Data Migration from Snowflake to Azure Data Lake Storage (ADLS) using Databricks
 1. By now, all the necessary permissions have been provisioned and you have access to the Snowflake tables and ADLS account.
 2. Use the [Snowflake-to-ADLS_Migration.ipynb](./Databricks/Snowflake-to-ADLS_Migration.ipynb) file to complete the steps below.
@@ -184,7 +185,7 @@ This project describes the step-by-step guide to migrates data from Snowflake to
     from pyspark.sql.functions import lit
     ```
 
-3. **Read Data from Snowflake:** The [Snowflake-to-ADLS_Migration.ipynb](./Databricks/Snowflake-to-ADLS_Migration.ipynb) script queries the Snowflake tables and loads the data into a Spark DataFrame.
+4. **Read Data from Snowflake:** The [Snowflake-to-ADLS_Migration.ipynb](./Databricks/Snowflake-to-ADLS_Migration.ipynb) script queries the Snowflake tables and loads the data into a Spark DataFrame.
 
     #### Read data from Snowflake
 
@@ -207,7 +208,7 @@ This project describes the step-by-step guide to migrates data from Snowflake to
     ```
 
 
-4. **Data Transformation:** It casts various columns into specific data types (e.g., integers and strings) and adds new columns.
+5. **Data Transformation:** It casts various columns into specific data types (e.g., integers and strings) and adds new columns.
 
     ```python
     # Add a new column called City and define the data types for Calgary data
@@ -232,7 +233,8 @@ This project describes the step-by-step guide to migrates data from Snowflake to
                     .withColumn("Property_Type", df_van["Property_Type"].cast(StringType())) \
                     .withColumn("City", lit("Vancouver").cast(StringType()))
     ```
-    5. **Copy data:** Finally, the transformed data is written to ADLS.
+    
+6. **Copy data:** Finally, the transformed data is written to ADLS.
 
         ```python
         # Write the Calgary data frame to the Azure storage account
