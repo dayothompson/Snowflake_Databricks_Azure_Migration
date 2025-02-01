@@ -177,8 +177,77 @@ This project describes the step-by-step guide to migrates data from Snowflake to
 ### 7. Data Migration from Snowflake to Azure Data Lake Storage (ADLS) using Databricks
 1. By now, all the necessary permissions have been provisioned and you have access to the Snowflake tables and ADLS account.
 2. Use the [Snowflake-to-ADLS_Migration.ipynb](./Databricks/Snowflake-to-ADLS_Migration.ipynb) file to complete the steps below.
+3. Import the necessary dependencies.
+
+    ```python
+    from pyspark.sql.types import *
+    from pyspark.sql.functions import lit
+    ```
+
 3. **Read Data from Snowflake:** The [Snowflake-to-ADLS_Migration.ipynb](./Databricks/Snowflake-to-ADLS_Migration.ipynb) script queries the Snowflake tables and loads the data into a Spark DataFrame.
+
+    #### Read data from Snowflake
+
+    ```python
+    # Create a query from the Calgary table in Snowflake 
+    query_cal = """
+    SELECT * FROM snowflake_catalog.sales.calgary
+    """
+
+    # Transform the query into a DataFrame
+    df_cal = spark.sql(query_cal)
+
+    # Create a query from the Vancouver table in Snowflake 
+    query_van = """
+    SELECT * FROM snowflake_catalog.sales.vancouver
+    """
+
+    # Transform the query into a DataFrame
+    df_van = spark.sql(query_van)
+    ```
+
+
 4. **Data Transformation:** It casts various columns into specific data types (e.g., integers and strings) and adds new columns.
-5. **Copy data:** Finally, the transformed data is written to ADLS.
+
+    ```python
+    # Add a new column called City and define the data types for Calgary data
+    cal_col = df_cal.withColumn("Price", df_cal["Price"].cast(IntegerType())) \
+                    .withColumn("Address", df_cal["Address"].cast(StringType())) \
+                    .withColumn("Postal_Code", df_cal["Postal_Code"].cast(StringType())) \
+                    .withColumn("Bed", df_cal["Bed"].cast(IntegerType())) \
+                    .withColumn("Full_Bath", df_cal["Full_Bath"].cast(IntegerType())) \
+                    .withColumn("Half_Bath", df_cal["Half_Bath"].cast(IntegerType())) \
+                    .withColumn("Property_Area", df_cal["Property_Area"].cast(IntegerType())) \
+                    .withColumn("Property_Type", df_cal["Property_Type"].cast(StringType())) \
+                    .withColumn("City", lit("Calgary").cast(StringType()))
+
+    # Add a new column called City and define the data types for Vancouver data
+    van_col = df_van.withColumn("Price", df_van["Price"].cast(IntegerType())) \
+                    .withColumn("Address", df_van["Address"].cast(StringType())) \
+                    .withColumn("Postal_Code", df_van["Postal_Code"].cast(StringType())) \
+                    .withColumn("Bed", df_van["Bed"].cast(IntegerType())) \
+                    .withColumn("Full_Bath", df_van["Full_Bath"].cast(IntegerType())) \
+                    .withColumn("Half_Bath", df_van["Half_Bath"].cast(IntegerType())) \
+                    .withColumn("Property_Area", df_van["Property_Area"].cast(IntegerType())) \
+                    .withColumn("Property_Type", df_van["Property_Type"].cast(StringType())) \
+                    .withColumn("City", lit("Vancouver").cast(StringType()))
+    ```
+    5. **Copy data:** Finally, the transformed data is written to ADLS.
+
+        ```python
+        # Write the Calgary data frame to the Azure storage account
+        cal_col.write \
+            .format("delta") \
+            .mode("overwrite") \
+            .option("path", f"abfss://{container_name}@{storage_account}.dfs.core.windows.net/calgary/") \
+            .save()
+
+        # Write the Vancouver data frame to the Azure storage account
+        van_col.write \
+            .format("delta") \
+            .mode("overwrite") \
+            .option("path", f"abfss://{container_name}@{storage_account}.dfs.core.windows.net/vancouver/") \
+            .save()
+        ```
 
 
